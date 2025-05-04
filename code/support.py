@@ -9,7 +9,7 @@ def import_images(*path, format = 'png', is_alpha = True):
 def import_folder(*path):
     frames = []
     for folder_path, sub_folder, file_names in walk(join(*path)):
-        for file_name in file_names:
+        for file_name in sorted(file_names, key = lambda name: int(name.split('.')[0])):
             full_path = join(folder_path, file_name)
             surf = pygame.image.load(full_path).convert_alpha()
             frames.append(surf)
