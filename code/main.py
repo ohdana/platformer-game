@@ -26,6 +26,8 @@ class Game:
         self.bee_frames = import_folder('images', 'enemies', 'bee')
         self.worm_frames = import_folder('images', 'enemies', 'worm')
 
+        self.audio = audio_importer('audio')
+        
     def setup(self):
         tmx_map = load_pygame(join('data', 'maps', 'world.tmx'))
         for x, y, image in tmx_map.get_layer_by_name('Main').tiles():
@@ -36,7 +38,10 @@ class Game:
         for obj in tmx_map.get_layer_by_name('Entities'):
             if obj.name == 'Player':
                 self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites, self.player_frames)
-                
+        
+        Bee(self.bee_frames, (500, 600), self.all_sprites)
+        Worm(self.worm_frames, (700, 600), self.all_sprites)
+        
     def run(self):
         while self.running:
             dt = self.clock.tick(FRAMERATE) / 1000 
