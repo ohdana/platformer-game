@@ -40,7 +40,6 @@ class Player(AnimatedSprite):
         self.collision('horizontal')
         
         # vertical
-        self.on_floor = False
         self.direction.y += self.gravity * dt
         self.rect.y += self.direction.y
         self.collision('vertical')
@@ -67,7 +66,9 @@ class Player(AnimatedSprite):
             self.flip = self.direction.x < 0
         else:
             self.frame_index = 0
-         
+            
+        self.frame_index = 1 if not self.on_floor else self.frame_index
+        
         self.image = self.frames[int(self.frame_index) % len(self.frames)]
         self.image = pygame.transform.flip(self.image, self.flip, False)
         
