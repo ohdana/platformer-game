@@ -16,6 +16,7 @@ class Game:
         self.all_sprites = AllSprites()
         self.collision_sprites = pygame.sprite.Group()
         self.bullet_sprites = pygame.sprite.Group()
+        self.enemy_sprites = pygame.sprite.Group()
         
         # load game
         self.load_assets()
@@ -27,7 +28,7 @@ class Game:
     def create_bee(self):
         Bee(frames = self.bee_frames, 
             pos = ((self.level_width + WINDOW_WIDTH),(randint(0, self.level_height))),
-            groups = self.all_sprites,
+            groups = (self.all_sprites, self.enemy_sprites),
             speed = randint(300,500))
     
     def create_bullet(self, pos, direction):
@@ -58,8 +59,16 @@ class Game:
             if obj.name == 'Player':
                 self.player = Player((obj.x, obj.y), self.all_sprites, self.collision_sprites, self.player_frames, self.create_bullet)
             if obj.name == 'Worm':
-                Worm(self.worm_frames, pygame.FRect(obj.x, obj.y, obj.width, obj.height), self.all_sprites)
-        
+                Worm(self.worm_frames, pygame.FRect(obj.x, obj.y, obj.width, obj.height), (self.all_sprites, self.enemy_sprites))
+    
+    def collision(self):
+        for bullet in self.bullet_sprites:
+            sprite_collision = pygame.sprite.spritecollide(bullet, self.enemy_sprites, False, pygame.sprite.collide_mask)
+            if sprite_collision:
+                bullet.kill()
+                for sprite in sprite_collision:
+                    sprite.destroy()
+            
     def run(self):
         while self.running:
             dt = self.clock.tick(FRAMERATE) / 1000 
@@ -71,6 +80,7 @@ class Game:
             # update
             self.bee_timer.update()
             self.all_sprites.update(dt)
+            self.collision()
 
             # draw 
             self.display_surface.fill(BG_COLOR)
