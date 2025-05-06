@@ -10,6 +10,9 @@ class Timer:
         
         if autostart:
             self.activate()
+            
+    def __bool__(self):
+        return self.active
         
     def activate(self):
         self.active = True
